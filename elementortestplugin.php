@@ -58,8 +58,10 @@ final class ElementorTestExtention{
     }
     public function init_widgets(){
         require_once( __DIR__ . '/widgets/test-widget.php' );
+        require_once(__DIR__ . '/widgets/faq-widget.php');
 
         \Elementor\Plugin::$instance()->widgets_manager->register_widget_type( new \Elementor_Test_Widget() );
+        \Elementor\Plugin::$instance()->widgets_manager->register_widget_type( new \Eementor_Faq_Widget() );
     }
     public function admin_notice_minimum_php_version(){
         if ( isset( $_GET['activate'] ) ) unset( $_GET['activate'] );

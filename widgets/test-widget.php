@@ -209,6 +209,125 @@ class Elementor_Test_Widget extends \Elementor\Widget_Base{
             ]
         );
 
+        $this->add_control(
+            'gallery',
+            [
+                'label'=>__('Gallery Control', 'elementortestplugin'),
+                'type'=>\Elementor\Controls_Manager::GALLERY,
+            ]
+        );
+
+        $this->add_control(
+            'demo_icon',
+            [
+                'label'=>__('Icon Control', 'elementortestplugin'),
+                'type'=>\Elementor\Controls_Manager::ICON,
+                'include'=>[
+                    'fa fa-facebook',
+                    'fa fa-twitter',
+                    'fa fa-github',
+                ],
+                'default'=> 'fa fa-github'
+            ]
+        );
+
+        $this->add_control(
+            'demo_popover',
+            [
+                'label'=>__('Fonts', 'elementortestplugin'),
+                'type'=>\Elementor\Controls_Manager::POPOVER_TOGGLE,
+            ]
+        );
+
+        $this->start_popover();
+
+        $this->add_control(
+            'demo_font_p1',
+            [
+                'label'=>__('Font For P1', 'elementortestplugin'),
+                'type'=>\Elementor\Controls_Manager::FONT,
+                'default'=>"'Open Sans', 'sans-serif'",
+                'selectors'=>[
+                    '{{ WRAPPER }} .p1'=>'font-family: {{VALUE}}'
+                ]
+            ]
+        );
+
+        $this->add_control(
+            'demo_font_p2',
+            [
+                'label'=>__('Font For P2', 'elementortestplugin'),
+                'type'=>\Elementor\Controls_Manager::FONT,
+                'default'=>"'Open Sans', 'sans-serif'",
+                'selectors'=>[
+                    '{{ WRAPPER }} .p2'=>'font-family: {{VALUE}}'
+                ]
+            ]
+        );
+
+        $this->end_popover();
+
+        $this->add_control(
+            'demo_slider',
+            [
+                'label'=>__('Font For P2', 'elementortestplugin'),
+                'type'=>\Elementor\Controls_Manager::SLIDER,
+                'size_units'=>['px','%', 'rem'],
+                'range'=>[
+                    'px'=>[
+                        'min'=>0,
+                        'max'=>120,
+                        'step'=>5
+                    ],
+                    '%'=>[
+                        'min'=>0,
+                        'max'=>200,
+                        'step'=>10
+                    ],
+                    'rem'=>[
+                        'min'=>0,
+                        'max'=>200,
+                        'step'=>10
+                    ]
+                ],
+                'default'=>[
+                    'unit'=>'px',
+                    'size'=>60
+                ],
+                'selectors'=>[
+                    '{{WRAPPER}} .p1'=>'font-size: {{SIZE}}{{UNIT}}'
+                ]
+            ]
+        );
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Typography::get_type(),
+            [
+                'label'=>__('Typography for P3', 'elementortestplugin'),
+                'name'=> 'demo_typography',
+                'scheme'=> \Elementor\Scheme_Typography::TYPOGRAPHY_1,
+                'selector'=>'{{ WRAPPER }} .p3',
+            ]
+        );
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Text_Shadow::get_type(),
+            [
+                'label'=>__('Text Shadow', 'elementortestplugin'),
+                'name'=> 'demo_ts',
+                'selector'=>'{{ WRAPPER }} .p3',
+            ]
+        );
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Text_Shadow::get_type(),
+            [
+                'label'=>__('Text Shadow', 'elementortestplugin'),
+                'name'=> 'demo_ts',
+                'selector'=>'{{ WRAPPER }} .p3',
+            ]
+        );
+
         $this->end_controls_section();
 
 
@@ -239,6 +358,37 @@ class Elementor_Test_Widget extends \Elementor\Widget_Base{
         echo "<p ". $this->get_render_attribute_string('description_description') .">". wp_kses_post($description)."</p>";
         //echo wp_get_attachment_image($settings['image']['id'],'medium');
         echo \Elementor\Group_Control_Image_Size::get_attachment_image_html($settings, 'imagesz', 'imagex');
+
+        echo "<div>";
+        $gallery_images = $settings['gallery'];
+        echo "<pre>";
+//        print_r($gallery_images);
+        foreach($gallery_images as $gallery_image){
+            echo wp_get_attachment_image($gallery_image['id'],'thumbnail');
+        }
+        echo "</pre>";
+        echo "</div>";
+
+        echo "<div>";
+        echo '<i class="'.$settings['demo_icon'].'"></i>';
+        echo "</div>";
+
+        echo "<div>";
+        ?>
+        <p class="p1">
+            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Autem enim reprehenderit quod! Earum, quam pariatur. Accusamus fuga dolore optio expedita.
+        </p>
+        <p class="p2">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam a dolore nam totam amet tenetur odit? Excepturi saepe officia deleniti quaerat, qui dolore? Officia eum natus illum excepturi ipsum vel quisquam veritatis pariatur! Eligendi porro similique eaque saepe, unde repellendus placeat, iusto nesciunt quibusdam modi quia numquam dicta repellat suscipit.
+        </p>
+        <p class="p3">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam a dolore nam totam amet tenetur odit? Excepturi saepe officia deleniti quaerat, qui dolore? Officia eum natus illum excepturi ipsum vel quisquam veritatis pariatur! Eligendi porro similique eaque saepe, unde repellendus placeat, iusto nesciunt quibusdam modi quia numquam dicta repellat suscipit.
+        </p>
+        <?php
+        echo "</div>";
+
+        ?>
+        <?php
     }
     protected function _content_template(){
         ?>
@@ -281,6 +431,39 @@ class Elementor_Test_Widget extends \Elementor\Widget_Base{
             Width: {{{settings.demo.dimension.width}}}<br/>
             Height: {{{settings.demo.dimension.height}}}
         </div>
+        <div>
+            <#
+                _.each(settings.gallery, function(image){
+                    var image = {
+                    id:image.id,
+                    url:image.url,
+                    size:'thumbnail',
+                    }
+                    var imageUrl = elementor.imagesManager.getImageUrl(image);
+
+                    #>
+                        <img src='{{ imageUrl }}' />
+                    <#
+                });
+            #>
+        </div>
+        <div>
+            <i class="{{{ settings.demo_icon }}}"></i>
+        </div>
+
+        <p class="p1">
+            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Autem enim reprehenderit quod! Earum, quam pariatur. Accusamus fuga dolore optio expedita.
+        </p>
+        <p class="p2">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam a dolore nam totam amet tenetur odit? Excepturi saepe officia deleniti quaerat, qui dolore? Officia eum natus illum excepturi ipsum vel quisquam veritatis pariatur! Eligendi porro similique eaque saepe, unde repellendus placeat, iusto nesciunt quibusdam modi quia numquam dicta repellat suscipit.
+        </p>
+        <p class="p3">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam a dolore nam totam amet tenetur odit? Excepturi saepe officia deleniti quaerat, qui dolore? Officia eum natus illum excepturi ipsum vel quisquam veritatis pariatur! Eligendi porro similique eaque saepe, unde repellendus placeat, iusto nesciunt quibusdam modi quia numquam dicta repellat suscipit.
+        </p>
+
+        <p>
+            Size : {{{settings.demo_slider.size}}} {{{settings.demo_slider.unit}}}
+        </p>
         <?php
     }
 }
